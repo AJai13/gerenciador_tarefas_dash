@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Tarefa - Sistema de Gerenciamento de Tarefas{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Editar Tarefa</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ task.title }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="description" name="description" rows="4">{{ task.description }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="pendente" {% if task.status == 'pendente' %}selected{% endif %}>Pendente</option>
+                            <option value="em andamento" {% if task.status == 'em andamento' %}selected{% endif %}>Em Andamento</option>
+                            <option value="concluída" {% if task.status == 'concluída' %}selected{% endif %}>Concluída</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assignee_id" class="form-label">Atribuir a</label>
+                        <select class="form-select" id="assignee_id" name="assignee_id" required>
+                            <option value="">Selecione um usuário</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}" {% if task.assignee_id == user.id %}selected{% endif %}>{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        <a href="{{ url_for('view_task', task_id=task.id) }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Sistema de Gerenciamento de Tarefas{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="mb-4">Dashboard</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-black bg-warning mb-3">
+                    <div class="card-header">Tarefas Pendentes</div>
+                    <div class="card-body">
+                        <h1 class="card-title text-center">{{ pending_count }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-black bg-info mb-3">
+                    <div class="card-header">Tarefas em Andamento</div>
+                    <div class="card-body">
+                        <h1 class="card-title text-center">{{ in_progress_count }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-black bg-success mb-3">
+                    <div class="card-header">Tarefas Concluídas</div>
+                    <div class="card-body">
+                        <h1 class="card-title text-center">{{ completed_count }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Minhas Tarefas</h4>
+            </div>
+            <div class="card-body">
+                {% if personal_tasks %}
+                    <div class="list-group">
+                        {% for task in personal_tasks %}
+                            <a href="{{ url_for('view_task', task_id=task.id) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ task.title }}</h5>
+                                    <small>
+                                        {% if task.status == 'pendente' %}
+                                            <span class="badge bg-warning">Pendente</span>
+                                        {% elif task.status == 'em andamento' %}
+                                            <span class="badge bg-info">Em Andamento</span>
+                                        {% elif task.status == 'concluída' %}
+                                            <span class="badge bg-success">Concluída</span>
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <p class="mb-1">{{ task.description|truncate(100) }}</p>
+                                <small>Criada por: {{ task.creator.username }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center">Você não tem tarefas atribuídas.</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ url_for('tasks') }}" class="btn btn-primary">Ver Todas as Tarefas</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Tarefas Criadas</h4>
+            </div>
+            <div class="card-body">
+                {% if created_tasks %}
+                    <div class="list-group">
+                        {% for task in created_tasks %}
+                            <a href="{{ url_for('view_task', task_id=task.id) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ task.title }}</h5>
+                                    <small>
+                                        {% if task.status == 'pendente' %}
+                                            <span class="badge bg-warning">Pendente</span>
+                                        {% elif task.status == 'em andamento' %}
+                                            <span class="badge bg-info">Em Andamento</span>
+                                        {% elif task.status == 'concluída' %}
+                                            <span class="badge bg-success">Concluída</span>
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <p class="mb-1">{{ task.description|truncate(100) }}</p>
+                                <small>Atribuída a: {{ task.assignee.username if task.assignee else 'Ninguém' }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center">Você não criou nenhuma tarefa ainda.</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ url_for('new_task') }}" class="btn btn-success">Criar Nova Tarefa</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Todas as Tarefas do Grupo</h4>
+            </div>
+            <div class="card-body">
+                {% if all_tasks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Status</th>
+                                    <th>Criador</th>
+                                    <th>Responsável</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in all_tasks %}
+                                    <tr>
+                                        <td>{{ task.title }}</td>
+                                        <td>
+                                            {% if task.status == 'pendente' %}
+                                                <span class="badge bg-warning">Pendente</span>
+                                            {% elif task.status == 'em andamento' %}
+                                                <span class="badge bg-info">Em Andamento</span>
+                                            {% elif task.status == 'concluída' %}
+                                                <span class="badge bg-success">Concluída</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ task.creator.username }}</td>
+                                        <td>{{ task.assignee.username if task.assignee else 'Ninguém' }}</td>
+                                        <td>
+                                            <a href="{{ url_for('view_task', task_id=task.id) }}" class="btn btn-sm btn-primary">Ver</a>
+                                            {% if task.creator_id == session.user_id or task.assignee_id == session.user_id %}
+                                                <a href="{{ url_for('edit_task', task_id=task.id) }}" class="btn btn-sm btn-warning">Editar</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center">Não há tarefas no sistema.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
