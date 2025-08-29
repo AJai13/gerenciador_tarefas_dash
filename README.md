@@ -1,3 +1,5 @@
+# Disciplina Tópicos Especiais em Software - (A2) Trabalho WebPython - Sistema de Gerenciamento de Tarefas Web
+
 # Sistema de Gerenciamento de Tarefas
 
 Um sistema de gerenciamento de tarefas desenvolvido com Flask, permitindo cadastro de usuários, criação e atribuição de tarefas, e acompanhamento do progresso através de um dashboard.
@@ -76,4 +78,3 @@ Um sistema de gerenciamento de tarefas desenvolvido com Flask, permitindo cadast
 
 - O banco de dados SQLite será criado automaticamente na primeira execução
 - A senha secreta da aplicação deve ser alterada em ambiente de produção
-# Disciplina Tópicos Especiais em Software - (A2) Trabalho WebPython - Sistema de Gerenciamento de Tarefas Web
